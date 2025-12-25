@@ -1,0 +1,14 @@
+services:
+  fastdocs-db:
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRES_DB=fastdocs
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - fastdocs-db-data:/bitnami/postgresql
+volumes:
+  fastdocs-db-data:
+    driver: local
