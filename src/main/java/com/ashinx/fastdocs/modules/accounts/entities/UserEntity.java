@@ -25,4 +25,7 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }
