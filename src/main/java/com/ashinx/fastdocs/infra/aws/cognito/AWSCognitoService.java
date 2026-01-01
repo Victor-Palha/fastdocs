@@ -100,4 +100,21 @@ public class AWSCognitoService implements OAuthService {
                 .bodyToMono(OAuthTokenResponse.class)
                 .block();
     }
+
+    public void addUserToGroup(String username, String group) {
+        try {
+            AdminAddUserToGroupRequest request = AdminAddUserToGroupRequest.builder()
+                    .userPoolId(userPoolId)
+                    .username(username)
+                    .groupName(group)
+                    .build();
+
+            cognitoClient.adminAddUserToGroup(request);
+
+        } catch (ResourceNotFoundException e) {
+            throw new RuntimeException("Usuário ou grupo não encontrado", e);
+        } catch (CognitoIdentityProviderException e) {
+            throw new RuntimeException("Erro ao adicionar usuário ao grupo: " + e.getMessage(), e);
+        }
+    }
 }

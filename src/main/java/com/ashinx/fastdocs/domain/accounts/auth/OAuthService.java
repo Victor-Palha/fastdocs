@@ -7,4 +7,6 @@ public interface OAuthService {
     String createUser(UserEntity data);
 
     OAuthTokenResponse callback(String code);
+
+    void addUserToGroup(String username, String group);
 }

@@ -28,11 +28,15 @@ public class CreateUserUseCase {
 
         String oAuthUserId = this.oAuthService.createUser(userToBeCreated);
         userToBeCreated.setId(UUID.fromString(oAuthUserId));
+        this.oAuthService.addUserToGroup(
+                userToBeCreated.getUsername(),
+                userToBeCreated.getRole().toString()
+        );
 
         return userRepository.create(userToBeCreated);
     }
 
     private String generateTemporaryPassword() {
-        return UUID.randomUUID().toString() + "Aa1!";
+        return UUID.randomUUID() + "Aa1!";
     }
 }
