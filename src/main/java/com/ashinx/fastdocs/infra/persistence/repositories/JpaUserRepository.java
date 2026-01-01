@@ -18,7 +18,7 @@ public class JpaUserRepository implements UserRepository {
 
     public UserEntity create(UserEntity data) {
         UserModel userModel = UserMapper.toPersistence(data);
-        UserModel userSaved = jpaRepo.save(userModel);
-        return UserMapper.toEntity(userSaved);
+        jpaRepo.save(userModel);
+        return data;
     }
 }

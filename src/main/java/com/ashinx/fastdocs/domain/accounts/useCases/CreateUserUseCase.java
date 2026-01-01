@@ -28,17 +28,13 @@ public class CreateUserUseCase {
                 data.username(),
                 data.email()
         );
+        String tempPassword = this.generateTemporaryPassword();
+        userToBeCreated.setPassword(tempPassword);
 
         String cognitoUserId = this.createCognitoUser(userToBeCreated);
-        UserEntity userCreated = UserEntity.update(
-                UUID.fromString(cognitoUserId),
-                userToBeCreated.getUsername(),
-                userToBeCreated.getEmail(),
-                userToBeCreated.getCompanyId(),
-                userToBeCreated.getRole()
-        );
+        userToBeCreated.setId(UUID.fromString(cognitoUserId));
 
-        return userRepository.create(userCreated);
+        return userRepository.create(userToBeCreated);
     }
 
     private String createCognitoUser(UserEntity data) {
@@ -64,7 +60,7 @@ public class CreateUserUseCase {
                                     .value(data.getCompanyId().toString())
                                     .build()
                     )
-                    .temporaryPassword(generateTemporaryPassword())
+                    .temporaryPassword(data.getPassword())
                     .messageAction(MessageActionType.SUPPRESS)
                     .desiredDeliveryMediums(DeliveryMediumType.EMAIL)
                     .build();

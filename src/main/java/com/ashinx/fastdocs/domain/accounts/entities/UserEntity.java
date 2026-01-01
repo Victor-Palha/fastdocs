@@ -18,14 +18,15 @@ public class UserEntity {
     private String email;
     private UUID companyId;
     private UserRole role;
+    private String password;
 
     public static UserEntity create(String username, String email) {
         final UUID id = UUID.randomUUID();
         final UUID companyId = UUID.randomUUID();
-        return new UserEntity(id, username, email, companyId, UserRole.ADMIN);
+        return new UserEntity(id, username, email, companyId, UserRole.ADMIN, null);
     }
 
     public static UserEntity update(UUID id, String username, String email, UUID companyId, UserRole role) {
-        return new UserEntity(id, username, email, companyId, role);
+        return new UserEntity(id, username, email, companyId, role, null);
     }
 }
