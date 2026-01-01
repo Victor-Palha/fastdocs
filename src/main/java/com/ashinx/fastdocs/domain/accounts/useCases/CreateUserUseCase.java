@@ -1,26 +1,21 @@
 package com.ashinx.fastdocs.domain.accounts.useCases;
 
-import com.ashinx.fastdocs.domain.accounts.dtos.CreateUserRequest;
+import com.ashinx.fastdocs.domain.accounts.auth.OAuthService;
+import com.ashinx.fastdocs.domain.accounts.useCases.dtos.CreateUserRequest;
 import com.ashinx.fastdocs.domain.accounts.entities.UserEntity;
 import com.ashinx.fastdocs.domain.accounts.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
 import java.util.UUID;
 
 @Service
 public class CreateUserUseCase {
     private final UserRepository userRepository;
-    private final CognitoIdentityProviderClient cognitoClient;
+    private final OAuthService oAuthService;
 
-    @Value("${aws.cognito.user-pool-id}")
-    private String userPoolId;
-
-    public CreateUserUseCase(UserRepository userRepository, CognitoIdentityProviderClient cognitoClient) {
+    public CreateUserUseCase(UserRepository userRepository, OAuthService oAuthService) {
         this.userRepository = userRepository;
-        this.cognitoClient = cognitoClient;
+        this.oAuthService = oAuthService;
     }
 
     public UserEntity execute(CreateUserRequest data) {
@@ -31,52 +26,10 @@ public class CreateUserUseCase {
         String tempPassword = this.generateTemporaryPassword();
         userToBeCreated.setPassword(tempPassword);
 
-        String cognitoUserId = this.createCognitoUser(userToBeCreated);
-        userToBeCreated.setId(UUID.fromString(cognitoUserId));
+        String oAuthUserId = this.oAuthService.createUser(userToBeCreated);
+        userToBeCreated.setId(UUID.fromString(oAuthUserId));
 
         return userRepository.create(userToBeCreated);
-    }
-
-    private String createCognitoUser(UserEntity data) {
-        try {
-            AdminCreateUserRequest cognitoRequest = AdminCreateUserRequest.builder()
-                    .userPoolId(userPoolId)
-                    .username(data.getUsername())
-                    .userAttributes(
-                            AttributeType.builder()
-                                    .name("email")
-                                    .value(data.getEmail())
-                                    .build(),
-                            AttributeType.builder()
-                                    .name("email_verified")
-                                    .value("true")
-                                    .build(),
-                            AttributeType.builder()
-                                    .name("name")
-                                    .value(data.getUsername())
-                                    .build(),
-                            AttributeType.builder()
-                                    .name("custom:tenent_id")
-                                    .value(data.getCompanyId().toString())
-                                    .build()
-                    )
-                    .temporaryPassword(data.getPassword())
-                    .messageAction(MessageActionType.SUPPRESS)
-                    .desiredDeliveryMediums(DeliveryMediumType.EMAIL)
-                    .build();
-
-            AdminCreateUserResponse response = cognitoClient.adminCreateUser(cognitoRequest);
-
-            return response.user().attributes().stream()
-                    .filter(attr -> "sub".equals(attr.name()))
-                    .map(AttributeType::value)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("sub não retornado pelo Cognito"));
-        } catch (UsernameExistsException e) {
-            throw new RuntimeException("Usuário já existe no Cognito", e);
-        } catch (CognitoIdentityProviderException e) {
-            throw new RuntimeException("Erro ao criar usuário no Cognito: " + e.getMessage(), e);
-        }
     }
 
     private String generateTemporaryPassword() {

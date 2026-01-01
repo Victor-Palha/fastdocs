@@ -1,6 +1,6 @@
 package com.ashinx.fastdocs.infra.controllers.accounts;
 
-import com.ashinx.fastdocs.domain.accounts.dtos.CreateUserRequest;
+import com.ashinx.fastdocs.domain.accounts.useCases.dtos.CreateUserRequest;
 import com.ashinx.fastdocs.domain.accounts.entities.UserEntity;
 import com.ashinx.fastdocs.domain.accounts.useCases.CreateUserUseCase;
 import com.ashinx.fastdocs.infra.controllers.accounts.dtos.CreateUserRequestDTO;

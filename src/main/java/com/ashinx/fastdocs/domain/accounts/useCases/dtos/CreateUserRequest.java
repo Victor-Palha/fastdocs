@@ -1,4 +1,4 @@
-package com.ashinx.fastdocs.domain.accounts.dtos;
+package com.ashinx.fastdocs.domain.accounts.useCases.dtos;
 
 public record CreateUserRequest(
         String username,
