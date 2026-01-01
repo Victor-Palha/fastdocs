@@ -1,6 +1,6 @@
 package com.ashinx.fastdocs.modules.accounts.controllers;
 
-import com.ashinx.fastdocs.modules.accounts.dto.CognitoTokenResponse;
+import com.ashinx.fastdocs.modules.accounts.controllers.dtos.CognitoTokenResponse;
 import com.ashinx.fastdocs.modules.accounts.services.CognitoOAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,8 +1,9 @@
-package com.ashinx.fastdocs.modules.accounts.entities;
+package com.ashinx.fastdocs.infra.persistence.models;
 
-import com.ashinx.fastdocs.modules.accounts.enums.Role;
+import com.ashinx.fastdocs.domain.accounts.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +13,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+@Builder
+public class UserModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String username;
@@ -24,7 +25,7 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private UserRole role;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

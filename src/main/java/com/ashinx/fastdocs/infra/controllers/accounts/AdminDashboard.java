@@ -1,4 +1,4 @@
-package com.ashinx.fastdocs.modules.accounts.controllers;
+package com.ashinx.fastdocs.infra.controllers.accounts;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

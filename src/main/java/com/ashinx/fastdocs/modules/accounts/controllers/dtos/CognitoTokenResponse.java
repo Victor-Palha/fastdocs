@@ -1,4 +1,4 @@
-package com.ashinx.fastdocs.modules.accounts.dto;
+package com.ashinx.fastdocs.modules.accounts.controllers.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

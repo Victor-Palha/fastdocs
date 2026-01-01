@@ -1,6 +1,6 @@
 package com.ashinx.fastdocs.modules.accounts.services;
 
-import com.ashinx.fastdocs.modules.accounts.dto.CognitoTokenResponse;
+import com.ashinx.fastdocs.modules.accounts.controllers.dtos.CognitoTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
