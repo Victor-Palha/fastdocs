@@ -1,11 +1,13 @@
 package com.ashinx.fastdocs.domain.accounts.useCases;
 
 import com.ashinx.fastdocs.domain.accounts.auth.OAuthService;
+import com.ashinx.fastdocs.domain.accounts.exceptions.UserAlreadyExistsException;
 import com.ashinx.fastdocs.domain.accounts.useCases.dtos.CreateUserRequest;
 import com.ashinx.fastdocs.domain.accounts.entities.UserEntity;
 import com.ashinx.fastdocs.domain.accounts.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,6 +21,12 @@ public class CreateUserUseCase {
     }
 
     public UserEntity execute(CreateUserRequest data) {
+        Optional<UserEntity> userAlreadyExists = this.userRepository.findByEmail(data.email());
+
+        if (userAlreadyExists.isPresent()) {
+            throw new UserAlreadyExistsException();
+        }
+
         UserEntity userToBeCreated = UserEntity.create(
                 data.username(),
                 data.email()

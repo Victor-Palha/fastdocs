@@ -7,6 +7,9 @@ import com.ashinx.fastdocs.infra.persistence.jpa.SpringDataUserJpaRepository;
 import com.ashinx.fastdocs.infra.persistence.models.UserModel;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
 public class JpaUserRepository implements UserRepository {
 
@@ -20,5 +23,15 @@ public class JpaUserRepository implements UserRepository {
         UserModel userModel = UserMapper.toPersistence(data);
         jpaRepo.save(userModel);
         return data;
+    }
+
+    public Optional<UserEntity> findById(UUID id) {
+        Optional<UserModel> user = jpaRepo.findById(id);
+        return user.map(UserMapper::toEntity);
+    }
+
+    public Optional<UserEntity> findByEmail(String email) {
+        Optional<UserModel> user = jpaRepo.findByEmail(email);
+        return user.map(UserMapper::toEntity);
     }
 }
