@@ -4,6 +4,7 @@ import com.ashinx.fastdocs.domain.documents.bucket.BucketService;
 import com.ashinx.fastdocs.domain.documents.entities.DocumentEntity;
 import com.ashinx.fastdocs.domain.documents.exceptions.CompanyNotFoundException;
 import com.ashinx.fastdocs.domain.documents.gateway.UserGateway;
+import com.ashinx.fastdocs.domain.documents.repositories.DocumentRepository;
 import com.ashinx.fastdocs.domain.documents.useCases.dtos.UploadDocumentRequest;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,12 @@ import java.util.UUID;
 public class UploadDocumentUseCase {
     final private BucketService bucketService;
     final private UserGateway userGateway;
+    final private DocumentRepository documentRepository;
 
-    public UploadDocumentUseCase(BucketService bucketService,  UserGateway userGateway) {
+    public UploadDocumentUseCase(BucketService bucketService,  UserGateway userGateway,  DocumentRepository documentRepository) {
         this.bucketService = bucketService;
         this.userGateway = userGateway;
+        this.documentRepository = documentRepository;
     }
 
     public DocumentEntity execute(UploadDocumentRequest data)  throws IOException {
@@ -29,7 +32,7 @@ public class UploadDocumentUseCase {
 
         String fileName = this.bucketService.generateFileName(data.file());
         String url = this.bucketService.upload(data.file(), fileName);
-        return DocumentEntity.create(
+        DocumentEntity document = DocumentEntity.create(
                 fileName,
                 url,
                 data.file().getContentType(),
@@ -37,5 +40,6 @@ public class UploadDocumentUseCase {
                 data.documentVisibility(),
                 companyId.get()
         );
+        return this.documentRepository.create(document);
     }
 }

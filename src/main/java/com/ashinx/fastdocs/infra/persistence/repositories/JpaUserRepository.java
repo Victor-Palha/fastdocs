@@ -19,17 +19,20 @@ public class JpaUserRepository implements UserRepository {
         this.jpaRepo = jpaRepo;
     }
 
+    @Override
     public UserEntity create(UserEntity data) {
         UserModel userModel = UserMapper.toPersistence(data);
         jpaRepo.save(userModel);
         return data;
     }
 
+    @Override
     public Optional<UserEntity> findById(UUID id) {
         Optional<UserModel> user = jpaRepo.findById(id);
         return user.map(UserMapper::toEntity);
     }
 
+    @Override
     public Optional<UserEntity> findByEmail(String email) {
         Optional<UserModel> user = jpaRepo.findByEmail(email);
         return user.map(UserMapper::toEntity);
