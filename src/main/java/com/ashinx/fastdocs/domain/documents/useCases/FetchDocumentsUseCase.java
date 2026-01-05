@@ -26,6 +26,6 @@ public class FetchDocumentsUseCase {
         if (companyId.isEmpty()) {
             throw new CompanyNotFoundException();
         }
-        return this.documentRepository.findAll(companyId.get(), data.page(), data.offset());
+        return this.documentRepository.findAll(companyId.get(), data.role(), data.page(), data.offset());
     }
 }

@@ -1,6 +1,8 @@
 package com.ashinx.fastdocs.infra.persistence.repositories;
 
+import com.ashinx.fastdocs.domain.accounts.enums.UserRole;
 import com.ashinx.fastdocs.domain.documents.entities.DocumentEntity;
+import com.ashinx.fastdocs.domain.documents.enums.DocumentVisibility;
 import com.ashinx.fastdocs.domain.documents.mappers.DocumentMapper;
 import com.ashinx.fastdocs.domain.documents.repositories.DocumentRepository;
 import com.ashinx.fastdocs.infra.persistence.jpa.SpringDataDocumentJpaRepository;
@@ -36,7 +38,7 @@ public class JpaDocumentRepository implements DocumentRepository {
     }
 
     @Override
-    public List<DocumentEntity> findAll(UUID companyId, Integer page, Integer size) {
+    public List<DocumentEntity> findAll(UUID companyId, UserRole role, Integer page, Integer size) {
         if (page == null || page < 0) {
             page = 0;
         }
@@ -46,7 +48,17 @@ public class JpaDocumentRepository implements DocumentRepository {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<DocumentModel> results = this.jpaRepo.findAllByCompanyId(companyId, pageable);
+        Page<DocumentModel> results;
+
+        if (role == UserRole.ADMIN) {
+            results = this.jpaRepo.findAllByCompanyId(companyId, pageable);
+        } else {
+            results = this.jpaRepo.findAllByCompanyIdAndVisibility(
+                    companyId,
+                    DocumentVisibility.PUBLIC,
+                    pageable
+            );
+        }
 
         return results.getContent()
                 .stream()

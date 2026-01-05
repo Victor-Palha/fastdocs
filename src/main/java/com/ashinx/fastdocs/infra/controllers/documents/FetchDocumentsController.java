@@ -1,5 +1,6 @@
 package com.ashinx.fastdocs.infra.controllers.documents;
 
+import com.ashinx.fastdocs.domain.accounts.enums.UserRole;
 import com.ashinx.fastdocs.domain.documents.entities.DocumentEntity;
 import com.ashinx.fastdocs.domain.documents.useCases.FetchDocumentsUseCase;
 import com.ashinx.fastdocs.domain.documents.useCases.dtos.FetchDocumentsRequest;
@@ -27,9 +28,17 @@ public class FetchDocumentsController {
         @Valid DocumentPaginationDTO data
     ) {
         UUID userId = UUID.fromString(jwt.getSubject());
+        List<String> userRoles = jwt.getClaimAsStringList("cognito:groups");
+
+        UserRole role = UserRole.valueOf(userRoles.getFirst());
+
+        if (userRoles.contains("ADMIN")) {
+            role = UserRole.ADMIN;
+        }
 
         FetchDocumentsRequest params = new FetchDocumentsRequest(
                 userId,
+                role,
                 data.page(),
                 data.offset()
         );
